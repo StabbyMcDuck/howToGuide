@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <title>Using the data!</title>
+</head>
+<body>
+<h1>Using the data!</h1>
+<h3>data data everywhere</h3>
+<p>
+    We're going to do a quick example of how to use the Ravelry API.  We are going to compare the yarn in
+    the author's stash to that of her friend's stash.  <br>
+    <br>
+    First we will check the call for <a href="http://www.ravelry.com/api#stash_list">stash/list</a> on
+    the API page.  For this, we will have to use <code>https://api.ravelry.com/people/{USERNAME}/stash/list.json</code>
+    <br>
+    Here is the author's stash:<br>
+    <br>
+    <script src="https://gist.github.com/StabbyMcDuck/09ba1f1b964f03b279da.js"></script><br>
+    <br>
+    And here is the friend's stash:<br>
+    <br>
+    <script src="https://gist.github.com/StabbyMcDuck/830a9a8b2ea59dafe3fd.js"></script><br>
+    <br>
+    We will be using Ruby for this example.  It will need to be installed before you can follow these instructions.
+    <br>
+    <br>
+    First, you will need to make a file for your data. <br>
+    <code>
+        vim FILE_NAME.json
+    </code>
+    <br><br>
+
+    Then copy your data into that file.  When done, write and quit vim.  <br>
+<pre><code>
+    irb
+    require 'json'
+</code></pre>
+<br>
+<br>
+Now we will get the yarn id's from the stash for both user names.  To do this, we will be using different
+variable names, but it is the same code.  Here we have stash1 vs. stash2.
+
+<pre>
+<code>
+    stash1 = JSON.parse(File.read('stash1.json'))
+    yarn_ids1 = stash1["stash"].reject { |item| item["yarn"].nil? }.map { |item| item["yarn"]["id"] }
+    stash2 = JSON.parse(File.read('stash2.json'))
+    yarn_ids2 = stash2["stash"].reject { |item| item["yarn"].nil? }.map { |item| item["yarn"]["id"] }
+</code>
+</pre>
+&nbsp &nbsp <strong><em>Pro tip:</em></strong> depending on the size of the stash, this could take a few moments.  <br>
+
+<pre>
+    <code>
+        require 'set'
+        yarn_idSet1 = Set.new yarn_ids1
+        yarn_idSet2 = Set.new yarn_ids2
+        yarn_idSet1 & yarn_idSet2 #this is the intersection of the 2 stashes!
+    </code>
+</pre>
+<br>
+Now we have the yarn ID for the yarns that in are both of our stashes!  But it's just an ID number,
+which is not very interesting, so we will have one more JSON call to look up what that yarn ID
+corresponds to.
+<pre>
+        <code>
+            curl -u <i>access_key:personal_key</i> https://api.ravelry.com/yarns/{ID}.json
+        </code>
+</pre>
+Replace the {ID} with the ID number(s) that you found.  Do one at a time.
+
+Here is the gist of our two user's intersection of yarn stashes:<br>
+<script src="https://gist.github.com/StabbyMcDuck/a0dd736085ba242dee3d.js"></script>
+</p>
+
+<!-- Previous button -->
+<a href="authenticate.html">
+    <img src="http://dabuttonfactory.com/button.png?t=Previous&f=Calibri-Bold&ts=24&tc=ccc&tshs=1&tshc=000&hp=20&vp=8&c=5&bgt=gradient&bgc=000&ebgc=666">
+</a>
+
+<!-- next button -->
+<a href="wrappingUp.html">
+    <img src="http://dabuttonfactory.com/button.png?t=Next&f=Calibri-Bold&ts=24&tc=ccc&tshs=1&tshc=000&hp=20&vp=8&c=5&bgt=gradient&bgc=000&ebgc=666">
+</a>
+</body>
+</html>

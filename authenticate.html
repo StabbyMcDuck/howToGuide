@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <title>Authenticating your key</title>
+</head>
+<body>
+<h1>Authenticating your key</h1>
+<h3>the business of getting your key to work</h3>
+<p>
+    There are two ways to authenticate your API key: Authenticating using an HTTP basic
+    authentication or using OAuth. <br>
+    <br>
+
+    <!-- HTTP basic auth -->
+    <strong>HTTP basic authentication</strong> is used if you just need to sign in to your Ravelry account remotely.
+    This will be done in the terminal.  You will need your <strong>personal key</strong> and your
+    <strong>access key</strong>.  Both of these keys can be found in your pro account page.  <br>
+    <br>
+    &nbsp &nbsp <strong><em>Pro tip:</em></strong> Your access key, personal key, and secret key are
+        all different and are not interchangeable!<br>
+    <br>
+    Below is an example of HTTP basic authentication.  To run this, open up terminal and run the following: <br>
+    <br>
+        <code>
+            &nbsp &nbsp curl -u <i>access_key:personal_key</i> https://api.ravelry.com/color_families.json
+        </code>
+    <br>
+    <br>
+    In this example, you would substitute your access key and your personal key, but you type in
+    https://api.ravelry.com/color_families.json exactly as it is written.  This is a JSON call and it will determine
+    your user name based on your access key and personal key.  <br>
+    <br>
+    The output for this example is:
+    <script src="https://gist.github.com/StabbyMcDuck/f31842aa357971c64a74.js"></script>
+
+    <!-- OAuth -->
+    <strong>OAuth</strong> is a better choice of authenticating, mainly because you can safely give an application
+    your permissions without giving out your key information.  This makes it a more secure way to access of Ravelry.<br>
+    Ravelry specifically uses OAuth 1.0a.<br>
+    There are several
+    <a href="http://oauth.net/code/">OAuth Libraries</a> that could be used, depending on what sorts of projects you have in mind. <br>
+    A couple that are known to work well with Ravelry are:<br>
+    <br>
+    &nbsp &nbsp &nbsp &nbsp<a href="https://github.com/AFNetworking/AFOAuth1Client">AFNetworking/AFOAuth1Client</a> &nbsp (Objective-C)<br>
+
+    &nbsp &nbsp &nbsp &nbsp<a href="https://github.com/oauth-xx/oauth-ruby">oauth-ruby</a> &nbsp (Ruby)<br>
+    <br>
+    <br>
+    The OAuth URLs are:<br>
+    &nbsp &nbsp &nbsp &nbsp <a href="https://www.ravelry.com/oauth/request_token">https://www.ravelry.com/oauth/request_token</a> <br>
+    &nbsp &nbsp &nbsp &nbsp <a href="https://www.ravelry.com/oauth/access_token">https://www.ravelry.com/oauth/access_token</a> <br>
+    &nbsp &nbsp &nbsp &nbsp <a href="https://www.ravelry.com/oauth/authorize">https://www.ravelry.com/oauth/authorize</a> <br>
+    <br>
+    &nbsp &nbsp <strong><em>Pro tip:</em></strong> OAuth tokens will expire, either when a user revokes access or after
+    a period of inactivity.  For this reason, remember to include a <strong>HTTP 401 Unauthorized</strong> error in your
+    application.<br>
+    <br>
+
+    For more information about the specifics of OAuth 1.0, please see
+        <a href="http://oauth.net/core/1.0/">http://oauth.net/core/1.0/</a>.<br>
+    <br>
+    <strong>OAuth Permissions</strong><br>
+    The <code>request_token</code> URL, <code>http://www.ravelry.com/oauth/request_token?scope=forum-write+message-write</code>,
+    takes an optional 'scope' parameter that can be used when your application needs to request privileges that are not included by
+    default. <br>
+
+<table>
+    <tr>
+        <th>Key</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>forum-write</td>
+        <td>Create, edit, or delete forum posts</td>
+    </tr>
+    <tr>
+        <td>message-write</td>
+        <td>Create, send, or delete messages</td>
+    </tr>
+    <tr>
+        <td>patternstore-read</td>
+        <td>List the pattern stores (and the products in the store) that the user administers</td>
+    </tr>
+</table>
+    <br>
+    &nbsp &nbsp <strong><em>Pro tip:</em></strong> you don't need to request these permissions if you are using a
+    personal key instead of OAuth.<br>
+    <br>
+
+    <strong>HTTP Status Codes</strong><br>
+    The following are error codes you may come across:
+
+    <table>
+        <tr>
+            <th>Error code #</th>
+            <th>Error code</th>
+            <th>Description</th>
+        </tr>
+
+        <tr>
+            <td>400</td>
+            <td>Bad Request</td>
+            <td>Invalid API call.  Check the parameters!</td>
+        </tr>
+        <tr>
+            <td>401</td>
+            <td>Unauthorized</td>
+            <td>OAuth token has expired or user revoked access.</td>
+        </tr>
+        <tr>
+            <td>403</td>
+            <td>Forbidden</td>
+            <td>Invalid OAuth token, invalid API key(s), or user is not permitted to use that method</td>
+        </tr>
+        <tr>
+            <td>404</td>
+            <td>Not Found</td>
+            <td>Resource no longer exists.</td>
+        </tr>
+        <tr>
+            <td>405</td>
+            <td>Method Not Allowed</td>
+            <td>You attempted to GET a POST or POST a GET.  Double check!</td>
+        </tr>
+        <tr>
+            <td>413</td>
+            <td>Request Entity Too Large</td>
+            <td>Your POST is too large!</td>
+        </tr>
+        <tr>
+            <td>500</td>
+            <td>Server Error</td>
+            <td>An error on Ravelry's side.  Report the bug!</td>
+        </tr>
+        <tr>
+            <td>503</td>
+            <td>Service Unavailable</td>
+            <td>Ravelry's API is not available.</td>
+        </tr>
+        <tr>
+            <td>504</td>
+            <td>Gateway Time-out</td>
+            <td>The request was cancelled because it took >10s to generate the
+            response.</td>
+        </tr>
+
+    </table>
+    <br>
+
+    Now that we can log in to Ravelry remotely and aren't violating any Terms of Service rules, we can get
+    started getting some data from Ravelry!
+
+
+
+</p>
+
+<!-- Previous button -->
+<a href="getStarted.html">
+    <img src="http://dabuttonfactory.com/button.png?t=Previous&f=Calibri-Bold&ts=24&tc=ccc&tshs=1&tshc=000&hp=20&vp=8&c=5&bgt=gradient&bgc=000&ebgc=666">
+</a>
+
+<!-- next button -->
+<a href="useData.html">
+    <img src="http://dabuttonfactory.com/button.png?t=Next&f=Calibri-Bold&ts=24&tc=ccc&tshs=1&tshc=000&hp=20&vp=8&c=5&bgt=gradient&bgc=000&ebgc=666">
+</a>
+
+</body>
+</html>

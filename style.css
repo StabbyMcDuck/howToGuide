@@ -1,0 +1,45 @@
+p, ul, h2 {
+    padding: 25px 50px;
+}
+
+h1, h2, h3, p {
+    font-family: "Tahoma", Geneva, sans-serif;
+}
+
+h3 {
+    color: #708090;
+    font-weight: 400;
+}
+
+table, th {
+    width: 50%;
+    border: 1 px solid black;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    padding: 5px;
+}
+
+th {
+    width: 33%;
+    border: 1 px solid black;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+td {
+    width: 33%;
+    border: 1 px solid black;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gist {width:75% !important;}
+.gist-data {
+    max-height: 500px;
+
+}
